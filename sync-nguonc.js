@@ -300,9 +300,25 @@ function saveOutput(movies, label = '') {
     const content = `// PhimFlix — Nguonc Data (${new Date().toLocaleString('vi-VN')})\n`
         + `window.pfMoviesUpdateStamp = ${Date.now()};\n`
         + `window.pfMovies = ${JSON.stringify(movies, null, 2)};\n`;
-    fs.writeFileSync(tmpFile, content, 'utf-8');
-    fs.renameSync(tmpFile, OUTPUT); // atomic replace
-    if (label) console.log(`   💾 ${label} — Tổng: ${movies.length} phim`);
+    try {
+        fs.writeFileSync(tmpFile, content, 'utf-8');
+        try {
+            if (fs.existsSync(OUTPUT)) {
+                fs.unlinkSync(OUTPUT);
+            }
+            fs.renameSync(tmpFile, OUTPUT);
+        } catch (renameErr) {
+            console.warn(`⚠️ Rename failed (${renameErr.message}), falling back to direct write.`);
+            fs.writeFileSync(OUTPUT, content, 'utf-8');
+            if (fs.existsSync(tmpFile)) {
+                try { fs.unlinkSync(tmpFile); } catch(e) {}
+            }
+        }
+        if (label) console.log(`   💾 ${label} — Tổng: ${movies.length} phim`);
+    } catch (err) {
+        console.error(`❌ Ghi dữ liệu thất bại: ${err.message}`);
+        throw err;
+    }
 }
 
 // ============================================================
@@ -538,5 +554,7 @@ async function runCrawler() {
     process.exit(0);
 }
 
-// ── KHỞI CHẠY ──────────────────────────────────────────────
-runCrawler().catch(console.error);
+runCrawler().catch(err => {
+    console.error('Fatal Error:', err);
+    process.exit(1);
+});

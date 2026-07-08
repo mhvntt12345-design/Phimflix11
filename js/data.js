@@ -355,139 +355,102 @@ class Database {
   getMovies() { 
       let memoryMovies = window.pfMovies || [];
       let localMovies = this.get('movies') || [];
+      let adminAddedMovies = JSON.parse(localStorage.getItem('pf_admin_movies') || '[]');
       
-      let lastCloudStamp = parseInt(localStorage.getItem('pf_cloud_stamp') || '0');
-      let currentUpdateStamp = window.pfMoviesUpdateStamp || 0;
-      const hasNewScrapeData = currentUpdateStamp > lastCloudStamp;
+      const storedEpisodes = this.getEpisodes();
+      const storedServers = this.getServers();
       
-      // Luôn cập nhật stamp mới nhất nếu có
-      if (hasNewScrapeData) {
-          localStorage.setItem('pf_cloud_stamp', currentUpdateStamp.toString());
-      }
-      
-      // Restore episodes from separate storage
-      // QUAN TRỌNG: Nếu có dữ liệu scrape mới, KHÔNG dùng pf_episodes làm override cho phim đã có trong pfMovies
-      // vì pf_episodes có thể bị stale (link hỏng, đếm sai do scrape lỗi trước đó)
-      const storedEpisodes = hasNewScrapeData ? {} : this.getEpisodes();
-      const storedServers = hasNewScrapeData ? {} : this.getServers();
-      
-      // Build a fast set of IDs that exist in pfMovies for O(1) lookup
       const scrapeMovieIds = new Set(memoryMovies.map(m => m.id));
 
-      localMovies = localMovies.map(m => {
-          // Nếu phim này có trong pfMovies → KHÔNG restore episodes từ pf_episodes
-          // (pfMovies episodes sẽ thắng trong merge bên dưới)
-          if (scrapeMovieIds.has(m.id)) {
-              return { ...m, episodes: [], servers: [] }; // Reset về [] để scrape episodes luôn thắng
+      adminAddedMovies = adminAddedMovies.map(m => ({
+          ...m,
+          episodes: storedEpisodes[m.id] !== undefined ? storedEpisodes[m.id] : (m.episodes || []),
+          servers: storedServers[m.id] !== undefined ? storedServers[m.id] : (m.servers || []),
+          visible: m.visible !== false,
+      }));
+
+      localMovies = localMovies.filter(m => scrapeMovieIds.has(m.id));
+      
+      let merged = [...memoryMovies];
+      
+      localMovies.forEach(lm => {
+          const idx = merged.findIndex(m => m.id === lm.id);
+          if (idx !== -1) {
+              merged[idx] = {
+                  ...merged[idx],
+                  views: lm.views !== undefined ? lm.views : merged[idx].views,
+                  featured: lm.featured === true ? true : merged[idx].featured,
+                  visible: lm.visible === false ? false : true,
+                  comments: lm.comments || merged[idx].comments || [],
+              };
           }
-          // Phim chỉ có trong localStorage (admin thêm thủ công) → dùng pf_episodes
-          return {
-              ...m,
-              episodes: storedEpisodes[m.id] !== undefined ? storedEpisodes[m.id] : (m.episodes || []),
-              servers: storedServers[m.id] !== undefined ? storedServers[m.id] : (m.servers || [])
-          };
       });
       
-      if (localMovies.length > 0 && memoryMovies.length > 0) {
-          // Smart Merge: scrape data là base, localStorage chỉ cung cấp các trường admin đã chỉnh sửa
-          let merged = [...memoryMovies];
-          localMovies.forEach(lm => {
-              // Match by ID first (most reliable), then apiUrl, but NOT title alone (too risky — same title ≠ same movie)
-              const idx = merged.findIndex(m => m.id === lm.id || 
-                                                (lm.apiUrl && m.apiUrl === lm.apiUrl));
-              if (idx !== -1) {
-                  // scrapeEpisodes luôn là episodes từ pfMovies (đã reset lm.episodes = [] ở trên)
-                  // Admin episodes chỉ thắng nếu họ có NHIỀU HƠN (tức admin thêm tập thủ công)
-                  const scrapeEpisodes = merged[idx].episodes || [];
-                  const adminEpisodes = lm.episodes || [];
-                  const finalEpisodes = adminEpisodes.length > scrapeEpisodes.length ? adminEpisodes : scrapeEpisodes;
-                  
-                  // visible: chỉ ẩn nếu admin rõ ràng set false; undefined/null → dùng true
-                  const finalVisible = (lm.visible === false) ? false : true;
-                  // featured: giữ từ scrape trừ khi admin bật
-                  const finalFeatured = lm.featured === true ? true : merged[idx].featured;
-
-                  merged[idx] = {
-                      ...lm,          // Đưa localStorage lên trước (dữ liệu cũ sẽ bị đè)
-                      ...merged[idx], // Dữ liệu scrape mới NHẤT ĐỊNH phải thắng (đè lên localStorage)
-                      episodes: finalEpisodes,
-                      servers: merged[idx].servers || lm.servers || [],
-                      // Lấy episode, status, updatedAt từ scrape. 
-                      // (Không dùng lm.episode nữa để tránh lỗi kẹt text "Tập 1" từ data cũ)
-                      episode: merged[idx].episode,
-                      status: merged[idx].status,
-                      updatedAt: merged[idx].updatedAt,
-                      visible: finalVisible,
-                      featured: finalFeatured,
-                  };
-              } else {
-                  // Phim chỉ trong localStorage (admin thêm thủ công) — đảm bảo visible
-                  lm.visible = (lm.visible === false) ? false : true;
-                  merged.push(lm);
-              }
-          });
-          
-          const deletedIds = this.get('deleted_movies') || [];
+      adminAddedMovies.forEach(am => {
+          if (!scrapeMovieIds.has(am.id)) {
+              merged.push(am);
+          }
+      });
+      
+      const deletedIds = this.get('deleted_movies') || [];
           return merged
               .filter(m => !deletedIds.includes(m.id))
               .map(m => ({ ...m, visible: m.visible !== false })) // Safety net: đảm bảo visible luôn có giá trị boolean
               .sort((a, b) => b.id - a.id);
-      }
-      
-      const deletedIds = this.get('deleted_movies') || [];
-      const result = localMovies.length > 0 ? localMovies : memoryMovies;
-      return result
-          .filter(m => !deletedIds.includes(m.id))
-          .map(m => ({ ...m, visible: m.visible !== false })); // Safety net cho fallback path
   }
   
   _saveMoviesToLocal(m) {
-      // Bỏ dòng window.pfMovies = m; để không ghi đè dữ liệu cào (scraped data) bằng dữ liệu cũ từ Firebase
+      const memoryMovies = window.pfMovies || [];
+      const memoryMap = new Map(memoryMovies.map(movie => [movie.id, movie]));
       
-      // Save episodes separately to reduce localStorage size
+      const adminAddedMovies = [];
+      const overrideMovies = [];
+      
+      m.forEach(movie => {
+          const mem = memoryMap.get(movie.id);
+          if (!mem) {
+              adminAddedMovies.push(movie);
+          } else {
+              if (movie.views !== mem.views || movie.featured !== mem.featured ||
+                  movie.visible !== mem.visible ||
+                  JSON.stringify(movie.comments || []) !== JSON.stringify(mem.comments || []))
+              {
+                  overrideMovies.push({ id: movie.id, views: movie.views, featured: movie.featured,
+                                        visible: movie.visible, comments: movie.comments || [] });
+              }
+          }
+      });
+      
       const episodesMap = {};
       const serversMap = {};
-      const moviesWithoutEpisodes = m.map(movie => {
+      const adminMoviesWithoutEpisodes = adminAddedMovies.map(movie => {
           episodesMap[movie.id] = movie.episodes || [];
           serversMap[movie.id] = movie.servers || [];
           const { episodes, servers, ...rest } = movie;
           return rest;
       });
-      
-      // Save episodes separately
       try {
-          localStorage.setItem('pf_episodes', JSON.stringify(episodesMap));
-          localStorage.setItem('pf_servers', JSON.stringify(serversMap));
+          localStorage.setItem('pf_admin_movies', JSON.stringify(adminMoviesWithoutEpisodes));
       } catch(e) {
-          console.warn('Episodes too large for localStorage, skipping:', e);
+          console.error('pf_admin_movies too large:', e);
       }
       
-      // Save movies (without episodes) - much smaller
       try {
-          localStorage.setItem('pf_movies', JSON.stringify(moviesWithoutEpisodes));
+          localStorage.setItem('pf_movies', JSON.stringify(overrideMovies));
       } catch(e) {
-          console.error('Movies still too large for localStorage:', e);
+          console.error('Override movies save failed:', e);
+      }
+      
+      if (adminAddedMovies.length > 0) {
           try {
-              // Last resort 1: save only essential fields
-              const minimal = moviesWithoutEpisodes.map(({ id, title, originalTitle, type, year, poster, banner, featured, visible, status, quality, views, genres, description, director, actors, duration, imdb, slug, apiUrl, createdAt }) =>
-                  ({ id, title, originalTitle, type, year, poster, banner, featured, visible, status, quality, views, genres, description, director, actors, duration, imdb, slug, apiUrl, createdAt })
-              );
-              localStorage.setItem('pf_movies', JSON.stringify(minimal));
-          } catch(e2) {
-              console.error('Minimal movies too large, stripping long texts:', e2);
-              try {
-                  // Last resort 2: strip descriptions and long texts completely
-                  const ultraMinimal = moviesWithoutEpisodes.map(m => {
-                      const um = { ...m };
-                      delete um.description;
-                      delete um.actors;
-                      delete um.director;
-                      return um;
-                  });
-                  localStorage.setItem('pf_movies', JSON.stringify(ultraMinimal));
-              } catch(e3) {
-                  console.error('Ultra minimal movies still too large. Giving up on localStorage:', e3);
-              }
+              const existingEpisodes = JSON.parse(localStorage.getItem('pf_episodes') || '{}');
+              const existingServers = JSON.parse(localStorage.getItem('pf_servers') || '{}');
+              const mergedEpisodes = { ...existingEpisodes, ...episodesMap };
+              const mergedServers = { ...existingServers, ...serversMap };
+              localStorage.setItem('pf_episodes', JSON.stringify(mergedEpisodes));
+              localStorage.setItem('pf_servers', JSON.stringify(mergedServers));
+          } catch(e) {
+              console.warn('Episodes too large for localStorage, skipping:', e);
           }
       }
   }
