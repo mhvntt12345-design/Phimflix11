@@ -906,7 +906,7 @@ function initDetail(movieId) {
 
         <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 5% 4rem;">
             <h3 style="font-size: 1.2rem; font-weight:600; margin-bottom: 1rem; color: #fff;">Phim Liên Quan</h3>
-            <div class="movie-grid" style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem;">
+            <div class="movie-grid">
                 ${relatedHtml || '<p style="color: var(--text-muted)">Không có phim liên quan</p>'}
             </div>
         </div>
