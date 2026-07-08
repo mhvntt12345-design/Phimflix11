@@ -729,6 +729,8 @@ ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
   gap: 1.25rem;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Movie Card */
@@ -746,6 +748,8 @@ ul {
   flex-direction: column;
   /* Promote to GPU layer only when needed */
   will-change: transform;
+  min-width: 0;
+  width: 100%;
 }
 
 .movie-card:hover {
