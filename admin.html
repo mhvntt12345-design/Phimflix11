@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PhimFlix</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo" target="_blank">Phim<span>Flix</span></a>
+        </div>
+        <div class="sidebar-menu">
+            <a href="#" class="menu-item active" data-tab="dashboard-tab">
+                <i class='bx bxs-dashboard'></i> Dashboard
+            </a>
+            <a href="#" class="menu-item" data-tab="movies-tab">
+                <i class='bx bx-film'></i> Quản Lý Phim
+            </a>
+            <a href="#" class="menu-item" data-tab="episodes-tab">
+                <i class='bx bx-video'></i> Quản Lý Tập Phim
+            </a>
+            <a href="#" class="menu-item" data-tab="genres-tab">
+                <i class='bx bx-category'></i> Quản Lý Thể Loại
+            </a>
+            <a href="#" class="menu-item" data-tab="users-tab">
+                <i class='bx bx-user'></i> Quản Lý Người Dùng
+            </a>
+            <a href="#" class="menu-item" data-tab="comments-tab">
+                <i class='bx bx-comment-detail'></i> Quản Lý Bình Luận
+            </a>
+            <a href="#" class="menu-item" data-tab="reports-tab">
+                <i class='bx bx-error-circle'></i> Báo Lỗi
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div>
+                <button class="icon-btn" id="toggleSidebarBtn"><i class='bx bx-menu'></i></button>
+            </div>
+            <div class="topbar-actions">
+                <button class="icon-btn theme-toggle" title="Giao diện"><i class='bx bx-moon'></i></button>
+                <button class="icon-btn"><i class='bx bx-bell'></i></button>
+                <div class="admin-profile" id="adminProfileMenuToggle" style="cursor: pointer; position: relative;">
+                    <div class="admin-avatar" id="adminAvatar">A</div>
+                    <span id="adminName">Admin</span>
+                    <i class='bx bx-chevron-down'></i>
+                    <!-- Dropdown for logout -->
+                    <div class="admin-dropdown" id="adminDropdown"
+                        style="display: none; position: absolute; top: 100%; right: 0; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 170px; z-index: 100;">
+                        <a href="index.html"
+                            style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; color: var(--admin-text); text-decoration: none; border-radius: 4px; transition: 0.2s;"><i
+                                class='bx bx-home'></i> Về Trang Chủ</a>
+                        <a href="#" id="adminLogoutBtn"
+                            style="display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; color: var(--danger); text-decoration: none; border-radius: 4px; transition: 0.2s; margin-top: 0.2rem;"><i
+                                class='bx bx-log-out'></i> Đăng Xuất</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page-content">
+
+            <!-- ================= DASHBOARD TAB ================= -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard Tổng Quan</h1>
+                    <div style="color: var(--admin-text-light);">Hôm nay: <span id="currentDate"></span></div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stat-grid" id="dashboardStats">
+                    <!-- Injected by JS -->
+                </div>
+
+                <div
+                    style="background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 12px; padding: 2rem; text-align: center;">
+                    <h3>Chào mừng đến với Trang Quản Trị PhimFlix!</h3>
+                    <p style="color: var(--admin-text-light); margin-top: 0.5rem;">Sử dụng menu bên trái để điều hướng
+                        và quản lý tài nguyên hệ thống phim.</p>
+                </div>
+            </div>
+
+            <!-- ================= MOVIES TAB ================= -->
+            <div id="movies-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Phim</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions" style="flex-wrap: wrap; gap: 1rem;">
+                        <h2 style="font-size: 1.2rem;">Danh Sách Phim</h2>
+                        
+                        <div class="admin-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; flex: 1; justify-content: flex-end;">
+                            <input type="text" id="filterMovieSearch" placeholder="Tìm tên phim..." oninput="applyMovieFilters()" style="padding: 0.6rem 1rem; border-radius: 10px; border: 1px solid var(--admin-border); background: var(--admin-bg); color: var(--admin-text); font-weight: 500; outline: none; width: 220px; transition: all 0.2s;">
+                            <select id="filterMovieType" onchange="applyMovieFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Tất cả dạng --</option>
+                            </select>
+                            <select id="filterMovieGenre" onchange="applyMovieFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Tất cả thể loại --</option>
+                            </select>
+                            <select id="filterMovieYear" onchange="applyMovieFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Tất cả năm --</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn" id="deleteSelectedMoviesBtn" style="background: var(--danger); display: none;"><i class='bx bx-trash'></i> Xóa Phim Đã Chọn</button>
+                            <button class="btn" id="addMovieBtn"><i class='bx bx-plus'></i> Thêm Phim Mới</button>
+                            <button class="btn" id="addMovieApiBtn"
+                                style="background: var(--accent-secondary, #8b5cf6);"><i
+                                    class='bx bx-cloud-download'></i> Thêm Bằng API</button>
+                            <button class="btn" id="syncApiBtn" style="background: #10b981;"><i class='bx bx-sync'></i> Đồng Bộ API</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="selectAllMovies"></th>
+                                    <th>STT</th>
+                                    <th>Phim</th>
+                                    <th>Loại</th>
+                                    <th>Lượt Xem</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="moviesTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= EPISODES TAB ================= -->
+            <div id="episodes-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Tập Phim</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions" style="flex-wrap: wrap; gap: 1rem;">
+                        <div class="admin-filters" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; width: 100%;">
+                            <select id="filterEpisodeMovieType" onchange="applyEpisodeFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Dạng --</option>
+                            </select>
+                            <select id="filterEpisodeMovieGenre" onchange="applyEpisodeFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Thể loại --</option>
+                            </select>
+                            <select id="filterEpisodeMovieYear" onchange="applyEpisodeFilters()" style="padding: 0.4rem; border-radius: 4px; border: 1px solid var(--admin-border); background: var(--admin-surface); color: var(--admin-text);">
+                                <option value="">-- Năm --</option>
+                            </select>
+                        </div>
+                        <div class="admin-form-inline">
+                            <label style="font-weight: 600;">Chọn Phim:</label>
+                            <select id="episodeMovieSelect" style="min-width: 250px;"
+                                onchange="loadEpisodesForSelect()">
+                                <!-- Loaded via JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <button class="btn" id="addEpisodeBtn"><i class='bx bx-plus'></i> Thêm Tập Mới</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên Tập</th>
+                                    <th>Nguồn / URL Video</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="episodesTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= GENRES TAB ================= -->
+            <div id="genres-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Thể Loại</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions">
+                        <h2 style="font-size: 1.2rem;">Danh Sách Thể Loại</h2>
+                        <form id="genreForm" class="admin-form-inline" onsubmit="saveGenre(event)">
+                            <input type="text" id="genreName" placeholder="Tên thể loại mới" required>
+                            <button type="submit" class="btn"><i class='bx bx-plus'></i> Thêm</button>
+                        </form>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên Thể Loại</th>
+                                    <th>Slug</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="genresTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- ================= USERS TAB ================= -->
+            <div id="users-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Thành Viên</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions">
+                        <h2 style="font-size: 1.2rem;">Danh Sách Người Dùng</h2>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên Đăng Nhập</th>
+                                    <th>Tên Hiển Thị</th>
+                                    <th>Email</th>
+                                    <th>Vai Trò</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= COMMENTS TAB ================= -->
+            <div id="comments-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Bình Luận</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions">
+                        <h2 style="font-size: 1.2rem;">Bình Luận Gần Đây</h2>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID Phim</th>
+                                    <th>Người Dùng</th>
+                                    <th>Nội Dung</th>
+                                    <th>Thời Gian</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commentsTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= REPORTS TAB ================= -->
+            <div id="reports-tab" class="tab-content">
+                <div class="page-header">
+                    <h1 class="page-title">Báo Cáo Sự Cố</h1>
+                </div>
+                <div class="table-container">
+                    <div class="table-header-actions">
+                        <h2 style="font-size: 1.2rem;">Danh Sách Báo Lỗi</h2>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Phim</th>
+                                    <th>Tập</th>
+                                    <th>Loại Báo Cáo</th>
+                                    <th>Nội Dung Lỗi</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Movie Form Modal (Add/Edit Movie) -->
+    <div class="modal" id="movieModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Thêm Phim Mới</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <form id="movieForm" class="admin-form" novalidate>
+                <input type="hidden" id="formMovieId">
+
+                <div class="form-section-title">Thông Tin Cơ Bản</div>
+                <div class="form-control">
+                    <label>Tên Phim (Tiếng Việt)</label>
+                    <input type="text" id="formTitle" required>
+                </div>
+                <div class="form-control">
+                    <label>Tên Gốc</label>
+                    <input type="text" id="formOriginalTitle">
+                </div>
+                <div class="form-control">
+                    <label>Năm Phát Hành</label>
+                    <input type="number" id="formYear" value="2024" required>
+                </div>
+                <div class="form-control">
+                    <label>Thời Lượng</label>
+                    <input type="text" id="formDuration" placeholder="Ví dụ: 120 phút hoặc 45 phút/tập">
+                </div>
+
+                <div class="form-section-title">Phân Loại & Hình Ảnh</div>
+                <div class="form-control">
+                    <label>Định Dạng (Loại Phim)</label>
+                    <select id="formType" required>
+                        <option value="phim-le">Phim Lẻ</option>
+                        <option value="phim-bo">Phim Bộ</option>
+                        <option value="anime">Anime</option>
+                        <option value="tv-show">TV Show</option>
+                        <option value="hoat-hinh">Hoạt Hình</option>
+                        <option value="phim-chieu-rap">Phim Chiếu Rạp</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label>Định Dạng / Chất Lượng</label>
+                    <select id="formQuality">
+                        <option value="4K">4K</option>
+                        <option value="2K">2K</option>
+                        <option value="1080p">1080p Full HD</option>
+                        <option value="720p">720p HD</option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label>Link Poster</label>
+                    <input type="text" id="formPoster">
+                </div>
+                <div class="form-control">
+                    <label>Link Banner</label>
+                    <input type="text" id="formBanner">
+                </div>
+                <div class="form-control form-full">
+                    <label>Thể Loại</label>
+                    <div id="formGenres"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem; margin-top: 0.5rem;">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <div class="form-section-title">Chi Tiết Thêm</div>
+                <div class="form-control">
+                    <label>Đạo Diễn</label>
+                    <input type="text" id="formDirector">
+                </div>
+                <div class="form-control">
+                    <label>Diễn Viên</label>
+                    <input type="text" id="formActors">
+                </div>
+                <div class="form-control">
+                    <label>Đánh Giá IMDb</label>
+                    <input type="number" id="formImdb" step="0.1" min="0" max="10" value="7.0">
+                </div>
+                <div class="form-control">
+                    <label>Trạng Thái</label>
+                    <select id="formStatus">
+                        <option value="Hoàn Thành">Hoàn Thành</option>
+                        <option value="Đang Chiếu">Đang Chiếu</option>
+                        <option value="Sắp Ra Mắt">Sắp Ra Mắt</option>
+                    </select>
+                </div>
+                <div class="form-control form-full">
+                    <label>Mô Tả Nội Dung</label>
+                    <textarea id="formDescription"></textarea>
+                </div>
+
+                <div class="form-control form-full" style="display: flex; gap: 1.5rem; flex-direction: row; background: var(--admin-hover); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--admin-border);">
+                    <label class="checkbox-group" style="border: none; padding: 0; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; width: auto;">
+                        <input type="checkbox" id="formFeatured" style="width: 20px; height: 20px; cursor: pointer;">
+                        <span style="font-weight: 600; color: var(--admin-text); font-size: 0.95rem;">Phim Nổi Bật (Slide banner)</span>
+                    </label>
+                    <label class="checkbox-group" style="border: none; padding: 0; background: transparent; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; width: auto;">
+                        <input type="checkbox" id="formVisible" checked style="width: 20px; height: 20px; cursor: pointer;">
+                        <span style="font-weight: 600; color: var(--admin-text); font-size: 0.95rem;">Hiển Thị Trên Web</span>
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" id="cancelFormBtn">Hủy</button>
+                    <button type="submit" class="btn">Lưu Lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Episode Form Modal (Add/Edit Episode) -->
+    <div class="modal" id="episodeModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="episodeModalTitle">Thêm Tập Phim</h2>
+                <button class="close-btn" id="closeEpisodeModalBtn">&times;</button>
+            </div>
+            <form id="episodeForm" class="admin-form" style="grid-template-columns: 1fr;">
+                <input type="hidden" id="formEpisodeId">
+                <div class="form-control">
+                    <label>Tên Tập Phim (Ví dụ: Tập 1, Tập Đặc Biệt, Full)</label>
+                    <input type="text" id="formEpisodeName" required placeholder="Tập 1">
+                </div>
+
+                <div class="form-control">
+                    <label>Link Video (URL)</label>
+                    <input type="url" id="formEpisodeUrl" required placeholder="Ví dụ: https://domain.com/video.mp4">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" id="cancelEpisodeFormBtn">Hủy</button>
+                    <button type="submit" class="btn" id="episodeSubmitBtn">
+                        <i class='bx bx-save'></i> Lưu Lại
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Movie via API Modal -->
+    <div class="modal" id="apiMovieModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Thêm Phim Bằng API (NguonC)</h2>
+                <button class="close-btn" id="closeApiModalBtn">&times;</button>
+            </div>
+            <form id="apiMovieForm" class="admin-form">
+                <div class="form-control form-full">
+                    <label>API URL (Có thể nhập nhiều link, mỗi link 1 dòng)</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                        <textarea id="apiMovieUrl" placeholder="Nhập đường dẫn API JSON, mỗi link 1 dòng..." required
+                            style="flex: 1; min-height: 80px; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--admin-border); background: rgba(0,0,0,0.2); color: var(--admin-text);"></textarea>
+                        <button type="button" class="btn btn-secondary" id="fetchApiDataBtn" style="white-space: nowrap;">Lấy Dữ Liệu</button>
+                    </div>
+                </div>
+                <div id="apiMoviePreview"
+                    style="display: none; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 1rem;">
+                        <img id="apiPreviewPoster" src="" alt="Poster"
+                            style="width: 80px; height: 120px; object-fit: cover; border-radius: 4px;">
+                        <div>
+                            <h3 id="apiPreviewTitle" style="margin-bottom: 0.5rem;"></h3>
+                            <p id="apiPreviewDesc"
+                                style="font-size: 0.85rem; color: var(--text-muted); display: -webkit-box; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" id="cancelApiFormBtn">Hủy</button>
+                    <button type="submit" class="btn" id="saveApiMovieBtn" disabled><i class='bx bx-save'></i> Lưu
+                        Phim</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Compat Version for simplicity) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="js/config.js?v=1782244290436"></script>
+    <script src="js/nguonc-data.js?v=1783422858949"></script>
+    <script src="js/data.js?v=1783422858949"></script>
+    <script src="js/admin.js?v=1782866350699"></script>
+</body>
+
+</html>

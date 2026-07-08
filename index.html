@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhimFlix - Xem phim trực tuyến chất lượng cao</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Boxicons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Unified Header -->
+    <header class="header">
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class='bx bx-menu'></i></button>
+
+        <a href="#home" class="logo">Phim<span>Flix</span></a>
+
+        <nav class="nav-links">
+            <a href="#home" class="nav-link-item active" data-view="home-view">Trang Chủ</a>
+            <a href="#list/phim-le" class="nav-link-item" data-view="list-view">Phim Lẻ</a>
+            <a href="#list/phim-bo" class="nav-link-item" data-view="list-view">Phim Bộ</a>
+            <a href="#list/anime" class="nav-link-item" data-view="list-view">Anime</a>
+            <a href="#search" class="nav-link-item" data-view="search-view">Tìm Kiếm</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="theme-toggle"><i class='bx bx-moon'></i></button>
+            <a href="#auth" class="user-btn" id="loginBtn"><i class='bx bx-user'></i></a>
+            <a href="#search" class="mobile-search-btn"><i class='bx bx-search'></i></a>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Modal -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu-modal" id="mobileMenuModal">
+        <div class="mobile-menu-header">
+            <button class="close-menu-btn" id="closeMenuBtn"><i class='bx bx-x'></i></button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="#auth" class="mobile-user-btn"><i class='bx bxs-user'></i> Thành viên</a>
+
+            <div class="mobile-menu-banner">
+                <i class='bx bx-devices'></i>
+                <div>
+                    <span>Tải ứng dụng</span>
+                    <strong>PhimFlix App</strong>
+                </div>
+            </div>
+
+            <div class="mobile-nav-grid">
+                <a href="#list/phim-le">Phim Lẻ</a>
+                <a href="#list/phim-bo">Phim Bộ</a>
+                <a href="#list/anime">Anime</a>
+                <a href="#list/tv-show">TV Show</a>
+            </div>
+
+            <div class="mobile-nav-accordion" id="mobileGenreAccordion">
+                <div class="accordion-header" id="genreAccordionBtn">
+                    <span>Thể loại</span>
+                    <i class='bx bx-chevron-down'></i>
+                </div>
+                <div class="accordion-content" id="mobileGenreList">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <div class="mobile-nav-accordion" id="mobileCountryAccordion">
+                <div class="accordion-header" id="countryAccordionBtn">
+                    <span>Quốc gia</span>
+                    <i class='bx bx-chevron-down'></i>
+                </div>
+                <div class="accordion-content" id="mobileCountryList">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SPA VIEWS CONTAINER ================= -->
+    <main>
+
+        <!-- 1. HOME VIEW -->
+        <div id="home-view" class="page-view active">
+            <!-- Hero Slider -->
+            <section class="hero-slider" id="heroSlider">
+                <!-- Dynamic Content -->
+            </section>
+
+            <!-- Genre Scroll Bar -->
+            <section class="topic-section">
+                <h2 class="section-title" id="topicSectionTitle">Bạn đang quan tâm gì?</h2>
+                <div class="genre-scroll-bar" id="homeGenreBar">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </section>
+
+            <!-- Movies Grid Sections -->
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Phim Mới Cập Nhật</h2>
+                    <a href="#search?sort=newest" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="newMovies"></div>
+            </section>
+
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Phim Thịnh Hành</h2>
+                    <a href="#search?sort=views" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="trendingMovies"></div>
+            </section>
+
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Phim Lẻ Đặc Sắc</h2>
+                    <a href="#search?type=phim-le" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="singleMovies"></div>
+            </section>
+
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Phim Bộ Đáng Xem</h2>
+                    <a href="#search?type=phim-bo" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="seriesMovies"></div>
+            </section>
+
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Hành Động Khốc Liệt</h2>
+                    <a href="#search" onclick="goToGenreSearch('hanh-dong')" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="actionMovies"></div>
+            </section>
+
+            <section class="movie-section">
+                <div class="section-header">
+                    <h2 class="section-title">Anime Tuyển Chọn</h2>
+                    <a href="#search?type=anime" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                </div>
+                <div class="movie-grid" id="animeMovies"></div>
+            </section>
+        </div>
+
+        <!-- 2. CATEGORY LIST VIEW -->
+        <div id="list-view" class="page-view">
+            <div class="list-page">
+                <div style="margin-bottom: 1.5rem;">
+                    <a href="#home"
+                        style="color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 500; transition: color 0.3s;"
+                        onmouseover="this.style.color='var(--accent-primary)'"
+                        onmouseout="this.style.color='var(--text-muted)'"><i class='bx bx-arrow-back'></i> Về Trang
+                        Chủ</a>
+                </div>
+                <div class="list-header">
+                    <h1 class="list-title" id="listPageTitle">Danh Sách Phim</h1>
+                    <div class="sort-box">
+                        <select id="listSortSelect">
+                            <option value="newest">Mới cập nhật</option>
+                            <option value="views">Lượt xem nhiều nhất</option>
+                            <option value="imdb">Điểm IMDb cao nhất</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="movie-grid" id="listGrid"></div>
+            </div>
+        </div>
+
+        <!-- 3. SEARCH VIEW -->
+        <div id="search-view" class="page-view">
+            <div class="search-container">
+                <div style="margin-bottom: 1.5rem;">
+                    <a href="#home"
+                        style="color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 500; transition: color 0.3s;"
+                        onmouseover="this.style.color='var(--accent-primary)'"
+                        onmouseout="this.style.color='var(--text-muted)'"><i class='bx bx-arrow-back'></i> Về Trang
+                        Chủ</a>
+                </div>
+                <div class="search-header">
+                    <h1 class="search-title">Tìm Kiếm Phim</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Tìm kiếm hàng ngàn bộ phim bom tấn hoàn
+                        toàn miễn phí</p>
+
+                    <div class="search-wrapper">
+                        <div class="search-bar">
+                            <i class='bx bx-search search-icon'></i>
+                            <input type="text" id="searchInput" placeholder="Nhập tên phim, diễn viên hoặc đạo diễn...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="movie-grid" id="searchResults" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+
+        <!-- 4. MOVIE DETAIL VIEW -->
+        <div id="detail-view" class="page-view">
+            <!-- Dynamic Detail Content -->
+            <div class="detail-container" id="detailContainer"></div>
+        </div>
+
+        <!-- 5. WATCH VIEW (VIDEO PLAYER) -->
+        <div id="watch-view" class="page-view">
+            <div class="watch-container">
+
+                <!-- Navigation Bar -->
+                <div class="watch-nav">
+                    <a href="#home" class="watch-back-link">
+                        <i class='bx bx-arrow-back'></i> Về Trang Chủ
+                    </a>
+                    <div class="watch-nav-title" id="watchNavTitle"></div>
+                </div>
+
+                <!-- Main layout: CSS Grid Areas -->
+                <div class="watch-layout">
+
+                    <!-- AREA: video — Player + Actions -->
+                    <div class="watch-video-col">
+                        <div class="custom-player" id="customPlayer">
+                            <iframe id="mainVideo" src="" allowfullscreen
+                                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                                sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups-to-escape-sandbox"></iframe>
+                            <div class="subtitle-overlay" id="subtitleOverlay" style="display:none;"></div>
+                        </div>
+
+                        <!-- Action Bar -->
+                        <div class="watch-action-bar">
+                            <button class="watch-action-btn" onclick="openReportModal()">
+                                <i class='bx bx-error-circle'></i>
+                                <span>Báo Lỗi</span>
+                            </button>
+                            <button class="watch-action-btn" id="addFavoriteBtn">
+                                <i class='bx bx-heart'></i>
+                                <span>Yêu Thích</span>
+                            </button>
+                            <button class="watch-action-btn watch-action-btn--primary" onclick="alert('Đã tạo phòng Xem Chung!')">
+                                <i class='bx bx-group'></i>
+                                <span>Tạo Phòng</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- AREA: sidebar — Episode List -->
+                    <div class="watch-sidebar" id="watchSidebar">
+                        <div class="sidebar-header" id="sidebarToggleBtn">
+                            <span class="sidebar-header-title">
+                                <i class='bx bx-list-ul'></i> Danh Sách Tập
+                            </span>
+                            <button class="sidebar-toggle-btn" id="sidebarCollapseBtn">
+                                <span id="sidebarCollapseText">Rút gọn</span>
+                                <i class='bx bx-chevron-up' id="sidebarCollapseIcon"></i>
+                            </button>
+                        </div>
+                        <div class="episode-list" id="episodesList">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- AREA: info — Movie Info + Comments -->
+                    <div class="watch-info-col">
+                        <div class="watch-info">
+                            <h1 class="watch-title" id="watchTitle">Tên Phim</h1>
+                            <div class="watch-meta-bar" id="watchMeta"></div>
+                            <p class="watch-desc" id="watchDesc"></p>
+                        </div>
+
+                        <div class="comments-section">
+                            <h2>Bình Luận (<span id="commentCount">0</span>)</h2>
+                            <form class="comment-form" id="commentForm">
+                                <textarea placeholder="Chia sẻ suy nghĩ của bạn về bộ phim..." id="commentText" required></textarea>
+                                <button type="submit" class="btn btn-primary">Bình Luận</button>
+                            </form>
+                            <div class="comments-list" id="commentsList"></div>
+                        </div>
+                    </div>
+
+                </div><!-- /watch-layout -->
+
+                <!-- Settings Modal (hidden) -->
+                <div class="settings-modal" id="playerSettingsModal">
+                    <div class="settings-option">
+                        <label>Tốc độ phát:</label>
+                        <select id="speedSelect">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x (Chuẩn)</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="2">2x</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div><!-- /watch-container -->
+        </div>
+
+
+        <!-- 6. USER PROFILE VIEW -->
+        <div id="profile-view" class="page-view">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 2rem 5% 0;">
+                <a href="#home"
+                    style="color: var(--text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 500; transition: color 0.3s;"
+                    onmouseover="this.style.color='var(--accent-primary)'"
+                    onmouseout="this.style.color='var(--text-muted)'"><i class='bx bx-arrow-back'></i> Về Trang Chủ</a>
+            </div>
+            <div class="profile-container">
+                <!-- Sidebar -->
+                <aside class="profile-sidebar">
+                    <div class="profile-avatar" id="userAvatar">U</div>
+                    <div class="profile-name" id="userName">User Name</div>
+                    <div class="profile-email" id="userEmail">user@example.com</div>
+
+                    <div class="profile-menu">
+                        <button class="profile-tab-btn active" data-profile-target="history">
+                            <i class='bx bx-history'></i> Lịch Sử Xem
+                        </button>
+                        <button class="profile-tab-btn" data-profile-target="favorites">
+                            <i class='bx bx-heart'></i> Phim Yêu Thích
+                        </button>
+                        <button class="profile-tab-btn" data-profile-target="settings">
+                            <i class='bx bx-cog'></i> Cài Đặt Tài Khoản
+                        </button>
+                        <button class="profile-tab-btn" data-profile-target="sync">
+                            <i class='bx bx-sync'></i> Đồng Bộ Dữ Liệu
+                        </button>
+                        <button class="btn-logout" id="btnLogout">
+                            <i class='bx bx-log-out'></i> Đăng Xuất
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Content -->
+                <section class="profile-content">
+                    <!-- History Tab -->
+                    <div class="tab-pane active" id="history">
+                        <h2 class="tab-title">Lịch Sử Xem Phim</h2>
+                        <div class="empty-state" id="historyEmpty">
+                            <i class='bx bx-history'></i>
+                            <p>Bạn chưa xem bộ phim nào.</p>
+                        </div>
+                        <div class="movie-grid" id="historyGrid"></div>
+                    </div>
+
+                    <!-- Favorites Tab -->
+                    <div class="tab-pane" id="favorites">
+                        <h2 class="tab-title">Phim Yêu Thích</h2>
+                        <div class="empty-state" id="favoritesEmpty">
+                            <i class='bx bx-heart'></i>
+                            <p>Danh sách yêu thích của bạn đang trống.</p>
+                        </div>
+                        <div class="movie-grid" id="favoritesGrid"></div>
+                    </div>
+
+                    <!-- Sync Tab -->
+                    <div class="tab-pane" id="sync">
+                        <h2 class="tab-title">Đồng Bộ Dữ Liệu (Mobile & PC)</h2>
+                        <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Tạo Mã Đồng Bộ (Từ máy này)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Mã đồng bộ chứa toàn bộ Lịch Sử Xem và Phim Yêu Thích của bạn trên thiết bị hiện tại.</p>
+                            <button class="btn-primary" onclick="generateSyncCode()" style="margin-bottom: 1rem;"><i class='bx bx-copy'></i> Tạo & Copy Mã Đồng Bộ</button>
+                            <input type="text" id="exportSyncCode" readonly style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; display: none;">
+                        </div>
+
+                        <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px;">
+                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Nhập Mã Đồng Bộ (Từ máy khác)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Dán Mã Đồng Bộ từ thiết bị khác vào đây để gộp Lịch Sử và Yêu Thích vào thiết bị này.</p>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <input type="text" id="importSyncCode" placeholder="Dán mã đồng bộ vào đây..." style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px;">
+                            </div>
+                            <button class="btn-primary" onclick="applySyncCode()"><i class='bx bx-download'></i> Đồng Bộ Ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-pane" id="settings">
+                        <h2 class="tab-title">Cài Đặt Tài Khoản</h2>
+                        <form class="setting-form" onsubmit="saveProfileSettings(event)">
+                            <div class="form-group">
+                                <label>Tên Hiển Thị</label>
+                                <input type="text" id="settingName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="settingEmail" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Đổi Mật Khẩu</label>
+                                <input type="password" id="settingPassword" placeholder="Nhập mật khẩu mới">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- 7. AUTH VIEW -->
+        <div id="auth-view" class="page-view">
+            <a href="#home"
+                style="position: absolute; top: 20px; left: 20px; color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 5px; font-weight: 500; font-size: 0.95rem; z-index: 10; transition: color 0.3s;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#cbd5e1'"><i
+                    class='bx bx-arrow-back'></i> Về trang chủ</a>
+            <div class="auth-view-wrapper">
+                <div class="auth-container">
+                    <!-- Login Form -->
+                    <div class="form-box active" id="loginFormBox">
+                        <div class="auth-header">
+                            <div class="logo">Phim<span>Flix</span></div>
+                            <p>Xem phim miễn phí, không giới hạn</p>
+                        </div>
+                        <form class="auth-form" id="loginForm">
+                            <div class="input-group">
+                                <i class='bx bx-user'></i>
+                                <input type="text" class="auth-input" id="loginUser" placeholder="Tên đăng nhập"
+                                    required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-lock-alt'></i>
+                                <input type="password" class="auth-input" id="loginPass" placeholder="Mật khẩu"
+                                    required>
+                            </div>
+                            <div class="error-msg" id="loginError">Tên đăng nhập hoặc mật khẩu không đúng</div>
+                            <div class="auth-options">
+                                <label class="checkbox-group">
+                                    <input type="checkbox" checked> Ghi nhớ đăng nhập
+                                </label>
+                                <a href="#" onclick="alert('Tính năng đang phát triển!')">Quên mật khẩu?</a>
+                            </div>
+                            <button type="submit" class="auth-btn">Đăng Nhập</button>
+                        </form>
+                        <div class="auth-switch">
+                            Bạn chưa có tài khoản? <a href="#register" id="toRegister">Đăng ký ngay</a>
+                        </div>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div class="form-box" id="registerFormBox">
+                        <div class="auth-header">
+                            <div class="logo">Phim<span>Flix</span></div>
+                            <p>Tạo tài khoản để trải nghiệm tốt nhất</p>
+                        </div>
+                        <form class="auth-form" id="registerForm">
+                            <div class="input-group">
+                                <i class='bx bx-user'></i>
+                                <input type="text" class="auth-input" id="regUser" placeholder="Tên đăng nhập" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-envelope'></i>
+                                <input type="email" class="auth-input" id="regEmail" placeholder="Địa chỉ email"
+                                    required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-edit-alt'></i>
+                                <input type="text" class="auth-input" id="regName" placeholder="Tên hiển thị" required>
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bx-lock-alt'></i>
+                                <input type="password" class="auth-input" id="regPass"
+                                    placeholder="Mật khẩu (tối thiểu 6 ký tự)" required>
+                            </div>
+                            <div class="error-msg" id="regError">Tài khoản hoặc email đã tồn tại</div>
+                            <button type="submit" class="auth-btn">Đăng Ký</button>
+                        </form>
+                        <div class="auth-switch">
+                            Bạn đã có tài khoản? <a href="#auth" id="toLogin">Đăng nhập</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Report Error Modal -->
+    <div class="modal" id="reportModal"
+        style="display:none; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000;">
+        <div class="modal-content"
+            style="background:var(--bg-secondary); padding:2rem; border-radius:var(--radius-lg); width:90%; max-width:450px;">
+            <div class="modal-header"
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h3 style="margin:0;">Báo Lỗi Sự Cố</h3>
+                <button class="close-btn" onclick="closeReportModal()"
+                    style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <form id="reportForm">
+                <div class="form-group">
+                    <label style="display:block; margin-bottom:0.5rem;">Loại Sự Cố</label>
+                    <select id="reportType"
+                        style="width:100%; padding:0.8rem; background:var(--bg-primary); border:1px solid var(--border-color); color:white; border-radius:var(--radius-sm);">
+                        <option value="Lỗi Video (Không phát được/Tải chậm)">Lỗi Video (Không phát được/Tải chậm)
+                        </option>
+                        <option value="Lỗi Phụ Đề (Sai lệch/Thiếu phụ đề)">Lỗi Phụ Đề (Sai lệch/Thiếu phụ đề)</option>
+                        <option value="Nội dung sai thông tin">Nội dung sai thông tin</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                    <label style="display:block; margin-bottom:0.5rem;">Chi Tiết Sự Cố</label>
+                    <textarea id="reportDetail" placeholder="Mô tả cụ thể sự cố để chúng tôi khắc phục tốt nhất..."
+                        required
+                        style="width:100%; height:100px; padding:0.8rem; background:var(--bg-primary); border:1px solid var(--border-color); color:white; border-radius:var(--radius-sm); resize:none;"></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1.5rem;">
+                    <button type="button" class="btn" style="background:var(--border-color);"
+                        onclick="closeReportModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Gửi Báo Cáo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Unified Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <a href="#home" class="logo">Phim<span>Flix</span></a>
+                <p style="margin-top: 1rem; color: var(--text-muted);">Trang web xem phim trực tuyến miễn phí hàng đầu
+                    Việt Nam.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Danh Mục</h3>
+                <ul>
+                    <li><a href="#list/phim-le">Phim Lẻ</a></li>
+                    <li><a href="#list/phim-bo">Phim Bộ</a></li>
+                    <li><a href="#list/anime">Anime</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Hỗ Trợ</h3>
+                <ul>
+                    <li><a href="#" onclick="alert('Điều khoản đang cập nhật!')">Điều Khoản Sử Dụng</a></li>
+                    <li><a href="#" onclick="alert('Chính sách đang cập nhật!')">Chính Sách Bảo Mật</a></li>
+                    <li><a href="#" onclick="alert('Liên hệ!')">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2024 PhimFlix. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Firebase SDK (Compat Version for simplicity) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="js/config.js?v=1782244290440"></script>
+    <!-- Ophim data -->
+    <script src="js/nguonc-data.js?v=1783422858949"></script>
+    <!-- Mock Database & Shared Logics -->
+    <script src="js/data.js?v=1783422858949"></script>
+
+    <!-- HLS for video streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <!-- Consolidated SPA Router and Logics -->
+    <script src="js/app.js?v=1783422858949"></script>
+</body>
+
+</html>
