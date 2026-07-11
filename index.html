@@ -9,7 +9,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <!-- Boxicons -->
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
@@ -140,7 +141,8 @@
             <section class="movie-section">
                 <div class="section-header">
                     <h2 class="section-title">Hành Động Khốc Liệt</h2>
-                    <a href="#search" onclick="goToGenreSearch('hanh-dong')" class="view-all">Xem tất cả <i class='bx bx-chevron-right'></i></a>
+                    <a href="#search" onclick="goToGenreSearch('hanh-dong')" class="view-all">Xem tất cả <i
+                            class='bx bx-chevron-right'></i></a>
                 </div>
                 <div class="movie-grid" id="actionMovies"></div>
             </section>
@@ -245,7 +247,8 @@
                                 <i class='bx bx-heart'></i>
                                 <span>Yêu Thích</span>
                             </button>
-                            <button class="watch-action-btn watch-action-btn--primary" onclick="alert('Đã tạo phòng Xem Chung!')">
+                            <button class="watch-action-btn watch-action-btn--primary"
+                                onclick="alert('Đã tạo phòng Xem Chung!')">
                                 <i class='bx bx-group'></i>
                                 <span>Tạo Phòng</span>
                             </button>
@@ -279,7 +282,8 @@
                         <div class="comments-section">
                             <h2>Bình Luận (<span id="commentCount">0</span>)</h2>
                             <form class="comment-form" id="commentForm">
-                                <textarea placeholder="Chia sẻ suy nghĩ của bạn về bộ phim..." id="commentText" required></textarea>
+                                <textarea placeholder="Chia sẻ suy nghĩ của bạn về bộ phim..." id="commentText"
+                                    required></textarea>
                                 <button type="submit" class="btn btn-primary">Bình Luận</button>
                             </form>
                             <div class="comments-list" id="commentsList"></div>
@@ -366,20 +370,29 @@
                     <!-- Sync Tab -->
                     <div class="tab-pane" id="sync">
                         <h2 class="tab-title">Đồng Bộ Dữ Liệu (Mobile & PC)</h2>
-                        <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Tạo Mã Đồng Bộ (Từ máy này)</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Mã đồng bộ chứa toàn bộ Lịch Sử Xem và Phim Yêu Thích của bạn trên thiết bị hiện tại.</p>
-                            <button class="btn-primary" onclick="generateSyncCode()" style="margin-bottom: 1rem;"><i class='bx bx-copy'></i> Tạo & Copy Mã Đồng Bộ</button>
-                            <input type="text" id="exportSyncCode" readonly style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; display: none;">
+                        <div
+                            style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Tạo Mã Đồng
+                                Bộ (Từ máy này)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Mã đồng bộ chứa
+                                toàn bộ Lịch Sử Xem và Phim Yêu Thích của bạn trên thiết bị hiện tại.</p>
+                            <button class="btn-primary" onclick="generateSyncCode()" style="margin-bottom: 1rem;"><i
+                                    class='bx bx-copy'></i> Tạo & Copy Mã Đồng Bộ</button>
+                            <input type="text" id="exportSyncCode" readonly
+                                style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; display: none;">
                         </div>
 
                         <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px;">
-                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Nhập Mã Đồng Bộ (Từ máy khác)</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Dán Mã Đồng Bộ từ thiết bị khác vào đây để gộp Lịch Sử và Yêu Thích vào thiết bị này.</p>
+                            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">Nhập Mã Đồng
+                                Bộ (Từ máy khác)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Dán Mã Đồng Bộ
+                                từ thiết bị khác vào đây để gộp Lịch Sử và Yêu Thích vào thiết bị này.</p>
                             <div class="form-group" style="margin-bottom: 1rem;">
-                                <input type="text" id="importSyncCode" placeholder="Dán mã đồng bộ vào đây..." style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px;">
+                                <input type="text" id="importSyncCode" placeholder="Dán mã đồng bộ vào đây..."
+                                    style="width: 100%; padding: 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px;">
                             </div>
-                            <button class="btn-primary" onclick="applySyncCode()"><i class='bx bx-download'></i> Đồng Bộ Ngay</button>
+                            <button class="btn-primary" onclick="applySyncCode()"><i class='bx bx-download'></i> Đồng Bộ
+                                Ngay</button>
                         </div>
                     </div>
 
@@ -555,15 +568,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="js/config.js?v=1782244290440"></script>
     <!-- Ophim data -->
-    <script src="js/nguonc-data.js?v=1783763828081"></script>
+    <script src="js/nguonc-data.js?v=1783504939163"></script>
     <!-- Mock Database & Shared Logics -->
-    <script src="js/data.js?v=1783763828081"></script>
+    <script src="js/data.js?v=1783504939163"></script>
 
     <!-- HLS for video streaming -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <!-- Consolidated SPA Router and Logics -->
-    <script src="js/app.js?v=1783763828081"></script>
+    <script src="js/app.js?v=1783504939163"></script>
 </body>
 
 </html>
