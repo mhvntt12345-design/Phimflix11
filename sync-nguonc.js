@@ -531,6 +531,9 @@ async function runCrawler() {
     }
     console.log(`\n✅ Đã cập nhật tập mới cho ${epUpdated}/${totalOngoing} phim đang chiếu`);
 
+    // ── Sắp xếp phim theo thời gian cập nhật mới nhất lên đầu ──
+    existingMovies.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
     // ── Lưu lần cuối & bust cache ─────────────────────────────
     saveOutput(existingMovies, 'Lưu lần cuối');
     bustHtmlCache();
