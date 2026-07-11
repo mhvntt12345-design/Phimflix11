@@ -1,25 +1,29 @@
-name: Bulk Fetch Movies
+name: Bulk Import Movies
 
 on:
   workflow_dispatch:
     inputs:
       start_page:
-        description: 'Trang bắt đầu (ví dụ: 406)'
+        description: 'Trang bắt đầu (ví dụ: 1)'
         required: true
-        default: '406'
+        default: '1'
       end_page:
-        description: 'Trang kết thúc (ví dụ: 800)'
+        description: 'Trang kết thúc (ví dụ: 100)'
         required: true
-        default: '800'
+        default: '100'
+      force_update:
+        description: 'Force update link cho phim đã có? (true/false)'
+        required: false
+        default: 'false'
 
 jobs:
-  bulk-fetch:
+  bulk-import:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
-    # Cho phép chạy tối đa 6 tiếng (giới hạn của GitHub Actions)
-    timeout-minutes: 360 
+
+    # Cho phép chạy tối đa 6 tiếng
+    timeout-minutes: 360
 
     steps:
       - name: Checkout Repository
@@ -32,16 +36,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run Bulk Update Script
-        run: node sync-nguonc.js ${{ github.event.inputs.start_page }} ${{ github.event.inputs.end_page }}
+      - name: Run Bulk Import Script
+        run: |
+          node bulk-import.js ${{ github.event.inputs.start_page }} ${{ github.event.inputs.end_page }} ${{ github.event.inputs.force_update }}
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git diff --quiet && git diff --staged --quiet || (
-            git commit -m "Bulk fetch movies (Pages ${{ github.event.inputs.start_page }} to ${{ github.event.inputs.end_page }})" &&
+          git add js/nguonc-data.js index.html admin.html
+          git diff --staged --quiet || (
+            git commit -m "Bulk import movies (Pages ${{ github.event.inputs.start_page }} to ${{ github.event.inputs.end_page }})" &&
             git pull --rebase origin master &&
             git push
           )
