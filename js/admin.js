@@ -630,6 +630,33 @@ function setupModalHandlers() {
         });
     }
 
+    // Setup Reload From GitHub Button
+    const reloadFromGithubBtn = document.getElementById('reloadFromGithubBtn');
+    if (reloadFromGithubBtn) {
+        reloadFromGithubBtn.addEventListener('click', async () => {
+            const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/mhvntt12345-design/Phimflix11/master/js/nguonc-data.js';
+            reloadFromGithubBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Đang tải...';
+            reloadFromGithubBtn.disabled = true;
+            try {
+                const res = await fetch(GITHUB_RAW_URL + '?t=' + Date.now()); // cache bust
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const code = await res.text();
+                // Execute the script content to update window.pfMovies in memory
+                // eslint-disable-next-line no-new-func
+                const fn = new Function(code);
+                fn();
+                const newCount = (window.pfMovies || []).length;
+                refreshAllData();
+                alert(`✅ Đã tải ${newCount.toLocaleString('vi-VN')} phim mới nhất từ GitHub!`);
+            } catch (e) {
+                console.error('Lỗi tải GitHub:', e);
+                alert('❌ Không thể tải dữ liệu từ GitHub: ' + e.message + '\n\nKiểm tra kết nối mạng hoặc thử lại sau.');
+            }
+            reloadFromGithubBtn.innerHTML = '<i class="bx bx-cloud-upload"></i> Cập Nhật Từ GitHub';
+            reloadFromGithubBtn.disabled = false;
+        });
+    }
+
     // Episode Modal Setup
     const episodeModal = document.getElementById('episodeModal');
     const addEpBtn = document.getElementById('addEpisodeBtn');

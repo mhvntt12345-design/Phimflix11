@@ -15,6 +15,8 @@ on:
 jobs:
   bulk-fetch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     # Cho phép chạy tối đa 6 tiếng (giới hạn của GitHub Actions)
     timeout-minutes: 360 

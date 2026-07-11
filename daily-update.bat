@@ -12,8 +12,8 @@ echo.
 echo [%DATE% %TIME%] Bat dau kiem tra tap moi tu NguonC...
 echo.
 
-:: Chay script voi END_PAGE=3 (72 phim moi nhat, du de bat tap moi hang ngay)
-node sync-NguonC.js
+:: Chay script voi page 1-3 (72 phim moi nhat + kiem tra tap moi phim dang chieu)
+node sync-nguonc.js 1 3
 
 echo.
 echo ========================================================

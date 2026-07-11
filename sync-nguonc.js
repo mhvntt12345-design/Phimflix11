@@ -7,8 +7,8 @@ const path = require('path');
 
 // ── CẤU HÌNH SỐ TRANG ──────────────────────────────────────
 // Bạn có thể sửa trực tiếp số ở đây để chọn trang muốn quét:
-const START_PAGE = parseInt(process.argv[2]) || 690;
-const END_PAGE = parseInt(process.argv[3]) || 700;
+const START_PAGE = parseInt(process.argv[2]) || 700;
+const END_PAGE = parseInt(process.argv[3]) || 800;
 
 // ── CẤU HÌNH API ───────────────────────────────────────────
 const API_LIST = 'https://phim.nguonc.com/api/films/phim-moi-cap-nhat?page=';
@@ -311,7 +311,7 @@ function saveOutput(movies, label = '') {
             console.warn(`⚠️ Rename failed (${renameErr.message}), falling back to direct write.`);
             fs.writeFileSync(OUTPUT, content, 'utf-8');
             if (fs.existsSync(tmpFile)) {
-                try { fs.unlinkSync(tmpFile); } catch(e) {}
+                try { fs.unlinkSync(tmpFile); } catch (e) { }
             }
         }
         if (label) console.log(`   💾 ${label} — Tổng: ${movies.length} phim`);
