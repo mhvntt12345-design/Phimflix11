@@ -82,8 +82,31 @@ async function fetchJsonWithRetry(url, retries = MAX_RETRIES) {
         try {
             const res = await fetch(url, {
                 signal: AbortSignal.timeout(TIMEOUT_MS),
-                headers: { 'User-Agent': 'Mozilla/5.0' },
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Referer': 'https://phim.nguonc.com/',
+                    'Origin': 'https://phim.nguonc.com',
+                    'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+                    'sec-ch-ua-mobile': '?0',
+                    'sec-ch-ua-platform': '"Windows"',
+                    'sec-fetch-dest': 'empty',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-site': 'same-origin',
+                    'Connection': 'keep-alive',
+                },
             });
+            if (res.status === 403) {
+                if (attempt < retries) {
+                    const wait = DELAY_MS * attempt * 5;
+                    console.warn(`     ⛔ 403 — Chờ ${wait}ms rồi thử lại (${attempt}/${retries})...`);
+                    await sleep(wait);
+                    continue;
+                }
+                throw new Error(`HTTP 403 Forbidden`);
+            }
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return await res.json();
         } catch (err) {
