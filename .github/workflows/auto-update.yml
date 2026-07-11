@@ -2,10 +2,8 @@ name: Auto Update Movies
 
 on:
   schedule:
-    # Chạy mỗi ngày vào lúc 00:00 UTC (khoảng 7h sáng giờ Việt Nam)
-    - cron: '0 0 * * *'
-    # Chạy mỗi ngày vào lúc 12:00 UTC (khoảng 7h tối giờ Việt Nam)
-    - cron: '0 12 * * *'
+    # Chạy mỗi 3 tiếng một lần
+    - cron: '0 */3 * * *'
   workflow_dispatch: # Cho phép chạy thủ công từ giao diện web GitHub
 
 jobs:
