@@ -1,1 +1,0 @@
-﻿{"name":"phimflix","version":"1.0.0","description":"PhimFlix Auto Update","main":"cloud-update.js","scripts":{"start":"node cloud-update.js"},"engines":{"node":">=18"}}
