@@ -1,0 +1,20 @@
+services:
+  - type: cron
+    name: phimflix-auto-update
+    env: node
+    schedule: "0 0,12 * * *"   # Chạy 00:00 UTC (7h sáng VN) và 12:00 UTC (7h tối VN)
+    buildCommand: echo "No build needed"
+    startCommand: node cloud-update.js
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false           # Sẽ nhập thủ công trong Render dashboard
+      - key: GITHUB_OWNER
+        value: mhvntt12345-design
+      - key: GITHUB_REPO
+        value: Phimflix11
+      - key: GITHUB_BRANCH
+        value: master
+      - key: START_PAGE
+        value: "1"
+      - key: END_PAGE
+        value: "5"
